@@ -8,21 +8,26 @@ import java.util.List;
 
 /**
  * Controlador: gestiona la lógica entre la Vista y el Modelo.
- * Contiene el array de estudiantes y responde a las búsquedas.
+ * Contiene la colección de estudiantes y responde a las búsquedas y a las altas.
  *
  * IMPORTANTE (MVC): el Controlador es el ÚNICO que conoce tanto la Vista
  * como el Modelo. Es el responsable de traducir objetos Estudiante
  * (Modelo) a Object[] / List<Object[]> (datos "neutros") antes de
  * entregárselos a la Vista. La Vista nunca recibe ni conoce la clase
- * Estudiante directamente.
+ * Estudiante directamente, y tampoco la construye: eso se hace aquí.
  */
 public class EstudianteController {
 
     // ── Vista ─────────────────────────────────────────────────────────────────
     private EstudianteView vista;
 
-    // ── Array de estudiantes (fuente de datos) ────────────────────────────────
-    private Estudiante[] estudiantes;
+    // ── Colección de estudiantes (fuente de datos) ────────────────────────────
+    // Se usa ArrayList y no un arreglo fijo, porque debe poder crecer
+    // cuando el usuario registra estudiantes en tiempo de ejecución.
+    private List<Estudiante> estudiantes;
+
+    // Contador para asignar el ID del próximo estudiante registrado.
+    private int siguienteId = 1;
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -35,24 +40,74 @@ public class EstudianteController {
     // ── Carga de datos iniciales ──────────────────────────────────────────────
 
     /**
-     * Inicializa el array de estudiantes con datos de ejemplo.
-     * En un proyecto real este array vendría de una base de datos o servicio.
+     * Inicializa la lista de estudiantes con datos de ejemplo.
+     * En un proyecto real estos datos vendrían de una base de datos o servicio.
      */
     private void cargarDatos() {
-        estudiantes = new Estudiante[] {
-            new Estudiante(1,  "Ana García",        "Ingeniería de Sistemas",  4.5),
-            new Estudiante(2,  "Carlos López",      "Ingeniería Civil",        3.8),
-            new Estudiante(3,  "María Rodríguez",   "Medicina",                4.9),
-            new Estudiante(4,  "José Martínez",     "Derecho",                 3.5),
-            new Estudiante(5,  "Laura Sánchez",     "Administración",          4.1),
-            new Estudiante(6,  "Andrés Torres",     "Ingeniería de Sistemas",  3.9),
-            new Estudiante(7,  "Valentina Gómez",   "Psicología",              4.3),
-            new Estudiante(8,  "Luis Herrera",      "Economía",                3.7),
-            new Estudiante(9,  "Sofía Díaz",        "Ingeniería Civil",        4.6),
-            new Estudiante(10, "Juliana Morales",   "Medicina",                4.8),
-            new Estudiante(11, "Ana Milena Ruiz",   "Derecho",                 4.0),
-            new Estudiante(12, "Carlos Andrés Paz", "Administración",          3.6)
-        };
+        estudiantes = new ArrayList<>();
+
+        estudiantes.add(new Estudiante(siguienteId++, "Ana García",        "Ingeniería de Sistemas", 4.5));
+        estudiantes.add(new Estudiante(siguienteId++, "Carlos López",      "Ingeniería Civil",       3.8));
+        estudiantes.add(new Estudiante(siguienteId++, "María Rodríguez",   "Medicina",               4.9));
+        estudiantes.add(new Estudiante(siguienteId++, "José Martínez",     "Derecho",                3.5));
+        estudiantes.add(new Estudiante(siguienteId++, "Laura Sánchez",     "Administración",         4.1));
+        estudiantes.add(new Estudiante(siguienteId++, "Andrés Torres",     "Ingeniería de Sistemas", 3.9));
+        estudiantes.add(new Estudiante(siguienteId++, "Valentina Gómez",   "Psicología",             4.3));
+        estudiantes.add(new Estudiante(siguienteId++, "Luis Herrera",      "Economía",               3.7));
+        estudiantes.add(new Estudiante(siguienteId++, "Sofía Díaz",        "Ingeniería Civil",       4.6));
+        estudiantes.add(new Estudiante(siguienteId++, "Juliana Morales",   "Medicina",               4.8));
+        estudiantes.add(new Estudiante(siguienteId++, "Ana Milena Ruiz",   "Derecho",                4.0));
+        estudiantes.add(new Estudiante(siguienteId++, "Carlos Andrés Paz", "Administración",         3.6));
+    }
+
+    // ── Alta de un nuevo estudiante ───────────────────────────────────────────
+
+    /**
+     * Registra un nuevo estudiante a partir de datos simples enviados por la Vista.
+     * La Vista NO construye el Estudiante: solo envía String, String y double.
+     *
+     * @param nombre   nombre capturado en el formulario
+     * @param carrera  carrera capturada en el formulario
+     * @param promedio promedio capturado en el formulario (entre 0.0 y 5.0)
+     */
+    public void agregarEstudiante(String nombre, String carrera, double promedio) {
+
+        // Validación: el nombre no puede estar vacío
+        if (nombre == null || nombre.trim().isEmpty()) {
+            vista.mostrarError("El nombre no puede estar vacío.");
+            return;
+        }
+
+        // Validación: la carrera no puede estar vacía
+        if (carrera == null || carrera.trim().isEmpty()) {
+            vista.mostrarError("La carrera no puede estar vacía.");
+            return;
+        }
+
+        // Validación: rango del promedio
+        if (promedio < 0.0 || promedio > 5.0) {
+            vista.mostrarError("El promedio debe estar entre 0.0 y 5.0.");
+            return;
+        }
+
+        // El Controlador es quien construye el objeto del Modelo
+        Estudiante nuevo = new Estudiante(siguienteId++, nombre.trim(), carrera.trim(), promedio);
+        estudiantes.add(nuevo);
+
+        vista.mostrarConfirmacion("Estudiante \"" + nuevo.getNombre()
+                + "\" registrado con el ID " + nuevo.getId() + ".");
+
+        // Refresca la tabla con todos los estudiantes, incluido el nuevo
+        vista.mostrarEstudiantes(convertirAFilas(estudiantes));
+    }
+
+    // ── Listado completo ──────────────────────────────────────────────────────
+
+    /**
+     * Muestra en la Vista todos los estudiantes registrados.
+     */
+    public void mostrarTodos() {
+        vista.mostrarEstudiantes(convertirAFilas(estudiantes));
     }
 
     // ── Lógica de búsqueda ────────────────────────────────────────────────────
@@ -118,6 +173,4 @@ public class EstudianteController {
         }
         return filas;
     }
-
-   
 }
