@@ -1,10 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
 package com.miapp;
 
-import com.miapp.vista.EstudianteView;
 import com.miapp.controlador.EstudianteController;
+import com.miapp.vista.EstudianteView;
 
 public class EstudianteMVC {
 
@@ -14,9 +11,14 @@ public class EstudianteMVC {
 
             EstudianteView vista = new EstudianteView();
 
-            new EstudianteController(vista);
+            EstudianteController controlador =
+                    new EstudianteController(vista);
+
+            vista.setControlador(controlador);
 
             vista.setVisible(true);
+
+            controlador.mostrarTodos();
         });
     }
 }
