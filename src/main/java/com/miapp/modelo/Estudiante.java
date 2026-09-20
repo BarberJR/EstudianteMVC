@@ -1,56 +1,30 @@
-package com.miapp.modelo;
+package com.miapp;
 
-public class Estudiante {
+import com.miapp.controlador.EstudianteController;
+import com.miapp.vista.EstudianteView;
 
-    private int id;
-    private String nombre;
-    private String carrera;
-    private double promedio;
+public class EstudianteMVC {
 
-    public Estudiante(int id, String nombre, String carrera, double promedio) {
-        this.id = id;
-        this.nombre = nombre;
-        this.carrera = carrera;
-        this.promedio = promedio;
-    }
+    public static void main(String[] args) {
 
-    public int getId() {
-        return id;
-    }
+        javax.swing.SwingUtilities.invokeLater(() -> {
 
-    public String getNombre() {
-        return nombre;
-    }
+            EstudianteView vista =
+                    new EstudianteView();
 
-    public String getCarrera() {
-        return carrera;
-    }
+            EstudianteController controlador =
+                    new EstudianteController(
+                            vista
+                    );
 
-    public double getPromedio() {
-        return promedio;
-    }
+            vista.setControlador(
+                    controlador
+            );
 
-    public void setId(int id) {
-        this.id = id;
-    }
+            vista.setVisible(true);
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public void setCarrera(String carrera) {
-        this.carrera = carrera;
-    }
-
-    public void setPromedio(double promedio) {
-        this.promedio = promedio;
-    }
-
-    @Override
-    public String toString() {
-        return "ID: " + id
-                + " | Nombre: " + nombre
-                + " | Carrera: " + carrera
-                + " | Promedio: " + promedio;
+            // Mostrar los estudiantes iniciales
+            controlador.mostrarTodos();
+        });
     }
 }

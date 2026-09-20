@@ -5,115 +5,268 @@ import com.miapp.controlador.EstudianteController;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.util.List;
 
 public class EstudianteView extends JFrame {
 
+    private JTextField txtNombreBuscar;
+
     private JTextField txtNombre;
+    private JTextField txtCarrera;
+    private JTextField txtPromedio;
+
     private JButton btnBuscar;
     private JButton btnMostrarTodos;
-
-    private JTextField txtNuevoNombre;
-    private JTextField txtNuevaCarrera;
-    private JTextField txtNuevoPromedio;
     private JButton btnAgregar;
 
-    private JTable tblResultados;
+    private JComboBox<String> comboCriterio;
+    private JButton btnOrdenar;
+
+    private JTable tabla;
     private DefaultTableModel modeloTabla;
+
     private JLabel lblEstado;
 
     private EstudianteController controlador;
 
     public EstudianteView() {
-        initComponentes();
-        initEventos();
+
+        iniciarComponentes();
+
+        iniciarEventos();
     }
 
-    private void initComponentes() {
+    private void iniciarComponentes() {
 
         setTitle("Búsqueda de Estudiantes - MVC NetBeans");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        setSize(800, 500);
+        setSize(850, 600);
+
+        setDefaultCloseOperation(
+                JFrame.EXIT_ON_CLOSE
+        );
 
         setLocationRelativeTo(null);
 
-        setLayout(new BorderLayout(10, 10));
+        setLayout(
+                new BorderLayout(
+                        10,
+                        10
+                )
+        );
 
+        // ==========================================
         // PANEL SUPERIOR
+        // ==========================================
+
         JPanel panelSuperior = new JPanel();
 
         panelSuperior.setLayout(
-                new BoxLayout(panelSuperior, BoxLayout.Y_AXIS)
+                new BoxLayout(
+                        panelSuperior,
+                        BoxLayout.Y_AXIS
+                )
         );
 
+        // ==========================================
         // BUSCAR
-        JPanel panelBusqueda = new JPanel(
-                new FlowLayout(FlowLayout.LEFT, 10, 10)
+        // ==========================================
+
+        JPanel panelBuscar = new JPanel(
+                new FlowLayout(
+                        FlowLayout.LEFT,
+                        10,
+                        10
+                )
         );
 
-        panelBusqueda.setBorder(
-                BorderFactory.createTitledBorder("Buscar estudiante")
+        panelBuscar.setBorder(
+                BorderFactory.createTitledBorder(
+                        "Buscar estudiante"
+                )
         );
 
-        txtNombre = new JTextField(20);
+        panelBuscar.add(
+                new JLabel("Nombre:")
+        );
 
-        btnBuscar = new JButton("Buscar");
+        txtNombreBuscar =
+                new JTextField(18);
 
-        // Personalización sencilla
-        btnBuscar.setBackground(new Color(70, 130, 180));
-        btnBuscar.setForeground(Color.WHITE);
+        panelBuscar.add(
+                txtNombreBuscar
+        );
+
+        btnBuscar =
+                new JButton("Buscar");
+
+        // Botón azul
+        btnBuscar.setBackground(
+                new Color(70, 130, 180)
+        );
+
+        btnBuscar.setForeground(
+                Color.WHITE
+        );
+
         btnBuscar.setFocusPainted(false);
-        btnBuscar.setFont(new Font("Arial", Font.BOLD, 12));
 
-        btnMostrarTodos = new JButton("Mostrar todos");
+        panelBuscar.add(
+                btnBuscar
+        );
 
-        btnMostrarTodos.setBackground(new Color(220, 220, 220));
+        btnMostrarTodos =
+                new JButton("Mostrar todos");
+
+        // Botón gris
+        btnMostrarTodos.setBackground(
+                new Color(220, 220, 220)
+        );
+
         btnMostrarTodos.setFocusPainted(false);
-        btnMostrarTodos.setFont(new Font("Arial", Font.BOLD, 12));
 
-        panelBusqueda.add(new JLabel("Nombre:"));
-        panelBusqueda.add(txtNombre);
-        panelBusqueda.add(btnBuscar);
-        panelBusqueda.add(btnMostrarTodos);
+        panelBuscar.add(
+                btnMostrarTodos
+        );
 
+        panelSuperior.add(
+                panelBuscar
+        );
+
+        // ==========================================
         // AGREGAR ESTUDIANTE
+        // ==========================================
+
         JPanel panelAgregar = new JPanel(
-                new FlowLayout(FlowLayout.LEFT, 10, 10)
+                new FlowLayout(
+                        FlowLayout.LEFT,
+                        10,
+                        10
+                )
         );
 
         panelAgregar.setBorder(
-                BorderFactory.createTitledBorder("Agregar estudiante")
+                BorderFactory.createTitledBorder(
+                        "Agregar estudiante"
+                )
         );
 
-        txtNuevoNombre = new JTextField(12);
-        txtNuevaCarrera = new JTextField(12);
-        txtNuevoPromedio = new JTextField(5);
+        panelAgregar.add(
+                new JLabel("Nombre:")
+        );
 
-        btnAgregar = new JButton("Agregar");
+        txtNombre =
+                new JTextField(10);
 
-        // Personalización sencilla
-        btnAgregar.setBackground(new Color(60, 160, 80));
-        btnAgregar.setForeground(Color.WHITE);
+        panelAgregar.add(
+                txtNombre
+        );
+
+        panelAgregar.add(
+                new JLabel("Carrera:")
+        );
+
+        txtCarrera =
+                new JTextField(12);
+
+        panelAgregar.add(
+                txtCarrera
+        );
+
+        panelAgregar.add(
+                new JLabel("Promedio:")
+        );
+
+        txtPromedio =
+                new JTextField(5);
+
+        panelAgregar.add(
+                txtPromedio
+        );
+
+        btnAgregar =
+                new JButton("Agregar");
+
+        // Botón verde
+        btnAgregar.setBackground(
+                new Color(70, 170, 80)
+        );
+
+        btnAgregar.setForeground(
+                Color.WHITE
+        );
+
         btnAgregar.setFocusPainted(false);
-        btnAgregar.setFont(new Font("Arial", Font.BOLD, 12));
 
-        panelAgregar.add(new JLabel("Nombre:"));
-        panelAgregar.add(txtNuevoNombre);
+        panelAgregar.add(
+                btnAgregar
+        );
 
-        panelAgregar.add(new JLabel("Carrera:"));
-        panelAgregar.add(txtNuevaCarrera);
+        panelSuperior.add(
+                panelAgregar
+        );
 
-        panelAgregar.add(new JLabel("Promedio:"));
-        panelAgregar.add(txtNuevoPromedio);
+        // ==========================================
+        // ORDENAR
+        // ==========================================
 
-        panelAgregar.add(btnAgregar);
+        JPanel panelOrdenar = new JPanel(
+                new FlowLayout(
+                        FlowLayout.LEFT,
+                        10,
+                        10
+                )
+        );
 
-        panelSuperior.add(panelBusqueda);
-        panelSuperior.add(panelAgregar);
+        panelOrdenar.setBorder(
+                BorderFactory.createTitledBorder(
+                        "Ordenar resultados"
+                )
+        );
 
+        panelOrdenar.add(
+                new JLabel("Criterio:")
+        );
+
+        comboCriterio =
+                new JComboBox<>(
+                        new String[]{
+                            "Nombre",
+                            "Promedio"
+                        }
+                );
+
+        panelOrdenar.add(
+                comboCriterio
+        );
+
+        btnOrdenar =
+                new JButton("Ordenar");
+
+        // Botón naranja sencillo
+        btnOrdenar.setBackground(
+                new Color(230, 170, 70)
+        );
+
+        btnOrdenar.setFocusPainted(false);
+
+        panelOrdenar.add(
+                btnOrdenar
+        );
+
+        panelSuperior.add(
+                panelOrdenar
+        );
+
+        add(
+                panelSuperior,
+                BorderLayout.NORTH
+        );
+
+        // ==========================================
         // TABLA
+        // ==========================================
+
         String[] columnas = {
             "ID",
             "Nombre",
@@ -121,112 +274,149 @@ public class EstudianteView extends JFrame {
             "Promedio"
         };
 
-        modeloTabla = new DefaultTableModel(columnas, 0) {
+        modeloTabla =
+                new DefaultTableModel(
+                        columnas,
+                        0
+                ) {
 
-            @Override
-            public boolean isCellEditable(int fila, int columna) {
-                return false;
-            }
-        };
+                    @Override
+                    public boolean isCellEditable(
+                            int fila,
+                            int columna) {
 
-        tblResultados = new JTable(modeloTabla);
+                        return false;
+                    }
+                };
 
-        tblResultados.setRowHeight(24);
+        tabla =
+                new JTable(modeloTabla);
 
-        JScrollPane scroll = new JScrollPane(tblResultados);
+        tabla.setRowHeight(25);
+
+        JScrollPane scroll =
+                new JScrollPane(tabla);
 
         scroll.setBorder(
-                BorderFactory.createTitledBorder("Resultados")
+                BorderFactory.createTitledBorder(
+                        "Resultados"
+                )
         );
 
-        // MENSAJE INFERIOR
-        lblEstado = new JLabel(
-                "Ingrese un nombre y presione Buscar."
+        add(
+                scroll,
+                BorderLayout.CENTER
         );
+
+        // ==========================================
+        // ESTADO
+        // ==========================================
+
+        lblEstado =
+                new JLabel(
+                        "Listo."
+                );
 
         lblEstado.setBorder(
-                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+                BorderFactory.createEmptyBorder(
+                        5,
+                        10,
+                        5,
+                        10
+                )
         );
 
-        add(panelSuperior, BorderLayout.NORTH);
-        add(scroll, BorderLayout.CENTER);
-        add(lblEstado, BorderLayout.SOUTH);
-    }
-
-    private void initEventos() {
-
-        // BOTÓN BUSCAR
-        btnBuscar.addActionListener((ActionEvent e) -> {
-
-            if (controlador != null) {
-
-                controlador.buscarEstudiante(
-                        txtNombre.getText().trim()
-                );
-            }
-        });
-
-        // ENTER EN BUSCAR
-        txtNombre.addActionListener(
-                (ActionEvent e) -> btnBuscar.doClick()
-        );
-
-        // BOTÓN MOSTRAR TODOS
-        btnMostrarTodos.addActionListener((ActionEvent e) -> {
-
-            if (controlador != null) {
-                controlador.mostrarTodos();
-            }
-        });
-
-        // BOTÓN AGREGAR
-        btnAgregar.addActionListener(
-                (ActionEvent e) -> enviarNuevoEstudiante()
-        );
-
-        // ENTER PARA AGREGAR
-        txtNuevoNombre.addActionListener(
-                (ActionEvent e) -> btnAgregar.doClick()
-        );
-
-        txtNuevaCarrera.addActionListener(
-                (ActionEvent e) -> btnAgregar.doClick()
-        );
-
-        txtNuevoPromedio.addActionListener(
-                (ActionEvent e) -> btnAgregar.doClick()
+        add(
+                lblEstado,
+                BorderLayout.SOUTH
         );
     }
 
-    private void enviarNuevoEstudiante() {
+    private void iniciarEventos() {
 
-        if (controlador == null) {
-            return;
-        }
+        // ==========================================
+        // BUSCAR
+        // ==========================================
 
-        String nombre = txtNuevoNombre.getText().trim();
+        btnBuscar.addActionListener(e -> {
 
-        String carrera = txtNuevaCarrera.getText().trim();
+            controlador.buscarEstudiante(
+                    txtNombreBuscar.getText()
+            );
+        });
+
+        // ==========================================
+        // MOSTRAR TODOS
+        // ==========================================
+
+        btnMostrarTodos.addActionListener(e -> {
+
+            controlador.mostrarTodos();
+        });
+
+        // ==========================================
+        // AGREGAR
+        // ==========================================
+
+        btnAgregar.addActionListener(e -> {
+
+            agregarEstudiante();
+        });
+
+        // ==========================================
+        // ORDENAR
+        // ==========================================
+
+        btnOrdenar.addActionListener(e -> {
+
+            String criterio =
+                    (String) comboCriterio.getSelectedItem();
+
+            controlador.ordenarPor(
+                    criterio
+            );
+        });
+    }
+
+    // ==========================================
+    // AGREGAR DESDE FORMULARIO
+    // ==========================================
+
+    private void agregarEstudiante() {
+
+        String nombre =
+                txtNombre.getText();
+
+        String carrera =
+                txtCarrera.getText();
 
         String textoPromedio =
-                txtNuevoPromedio.getText().trim().replace(',', '.');
+                txtPromedio
+                        .getText()
+                        .replace(
+                                ",",
+                                "."
+                        );
 
         double promedio;
 
         try {
 
-            promedio = Double.parseDouble(textoPromedio);
+            promedio =
+                    Double.parseDouble(
+                            textoPromedio
+                    );
 
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException e) {
 
             mostrarError(
-                    "El promedio debe ser un número. Ejemplo: 4.2"
+                    "El promedio debe ser un número."
             );
 
             return;
         }
 
-        // La Vista manda los datos al Controlador
+        // La Vista solo manda los datos
         controlador.agregarEstudiante(
                 nombre,
                 carrera,
@@ -234,55 +424,54 @@ public class EstudianteView extends JFrame {
         );
     }
 
-    public void mostrarEstudiante(Object[] fila) {
+    // ==========================================
+    // MOSTRAR ESTUDIANTES
+    // ==========================================
 
-        limpiarTabla();
+    public void mostrarEstudiantes(
+            List<Object[]> filas) {
 
-        agregarFila(fila);
-
-        setEstado("Se encontró 1 estudiante.");
-    }
-
-    public void mostrarEstudiantes(List<Object[]> filas) {
-
-        limpiarTabla();
-
-        if (filas == null || filas.isEmpty()) {
-
-            setEstado(
-                    "No se encontraron estudiantes."
-            );
-
-            return;
-        }
+        modeloTabla.setRowCount(0);
 
         for (Object[] fila : filas) {
 
-            agregarFila(fila);
+            modeloTabla.addRow(fila);
         }
 
-        setEstado(
+        mostrarEstado(
                 "Se encontraron "
                 + filas.size()
                 + " estudiante(s)."
         );
     }
 
-    public void mostrarConfirmacion(String mensaje) {
+    // ==========================================
+    // CONFIRMACIÓN
+    // ==========================================
+
+    public void mostrarConfirmacion(
+            String mensaje) {
 
         JOptionPane.showMessageDialog(
                 this,
                 mensaje,
-                "Registro exitoso",
+                "Confirmación",
                 JOptionPane.INFORMATION_MESSAGE
         );
 
-        limpiarFormulario();
+        txtNombre.setText("");
+        txtCarrera.setText("");
+        txtPromedio.setText("");
 
-        setEstado(mensaje);
+        txtNombre.requestFocus();
     }
 
-    public void mostrarError(String mensaje) {
+    // ==========================================
+    // ERROR
+    // ==========================================
+
+    public void mostrarError(
+            String mensaje) {
 
         JOptionPane.showMessageDialog(
                 this,
@@ -291,37 +480,31 @@ public class EstudianteView extends JFrame {
                 JOptionPane.ERROR_MESSAGE
         );
 
-        setEstado("Error: " + mensaje);
+        mostrarEstado(
+                "Error: " + mensaje
+        );
     }
+
+    // ==========================================
+    // MENSAJE DE ESTADO
+    // ==========================================
+
+    public void mostrarEstado(
+            String mensaje) {
+
+        lblEstado.setText(
+                mensaje
+        );
+    }
+
+    // ==========================================
+    // CONECTAR CONTROLADOR
+    // ==========================================
 
     public void setControlador(
-            EstudianteController controlador
-    ) {
+            EstudianteController controlador) {
 
-        this.controlador = controlador;
-    }
-
-    private void limpiarFormulario() {
-
-        txtNuevoNombre.setText("");
-        txtNuevaCarrera.setText("");
-        txtNuevoPromedio.setText("");
-
-        txtNuevoNombre.requestFocus();
-    }
-
-    private void agregarFila(Object[] fila) {
-
-        modeloTabla.addRow(fila);
-    }
-
-    private void limpiarTabla() {
-
-        modeloTabla.setRowCount(0);
-    }
-
-    private void setEstado(String texto) {
-
-        lblEstado.setText(texto);
+        this.controlador =
+                controlador;
     }
 }
